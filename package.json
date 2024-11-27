@@ -1,0 +1,37 @@
+{
+	"name": "cs-480-final-project",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint",
+		"beautify": "prettier . --write"
+	},
+	"dependencies": {
+		"mysql": "^2.18.1",
+		"next": "15.0.3",
+		"react": "19.0.0-rc-66855b96-20241106",
+		"react-dom": "19.0.0-rc-66855b96-20241106",
+		"sharp": "^0.33.5"
+	},
+	"devDependencies": {
+		"@types/eslint": "^9.6.1",
+		"@types/eslint-config-prettier": "^6.11.3",
+		"@types/mysql": "^2.15.26",
+		"@types/node": "^20",
+		"@types/react": "^18.3.12",
+		"@types/react-dom": "^18.3.1",
+		"@typescript-eslint/eslint-plugin": "^8.16.0",
+		"@typescript-eslint/parser": "^8.16.0",
+		"eslint": "^9.15.0",
+		"eslint-config-next": "15.0.3",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-prettier": "^5.2.1",
+		"prettier": "^3.4.1",
+		"sass": "^1.81.0",
+		"typescript": "^5.6.3"
+	},
+	"type": "module"
+}
