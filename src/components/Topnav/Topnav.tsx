@@ -20,12 +20,6 @@ export default function Topnav({
 				<li>
 					<Link href="/">{"Index"}</Link>
 				</li>
-				<li>
-					<Link href="/blog">{"Blog"}</Link>
-				</li>
-				<li>
-					<Link href="/portfolio">{"Portfolio"}</Link>
-				</li>
 			</ul>
 		</nav>
 	);
