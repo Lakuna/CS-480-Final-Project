@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS Product (
 
 -- Described as `Contain` in the diagram, but that name is used for multiple relationships, including a fully redundant relationship between `Cart` and `Product` that is excluded from this schema due to being reduntant with this relation.
 CREATE TABLE IF NOT EXISTS OrderItem (
+	order_item_id INT PRIMARY KEY AUTO_INCREMENT, -- Included in neither the requirements nor the diagram but included here to give this relation a primary key.
 	order_id INT NOT NULL,
 	product_id INT NOT NULL,
 	quantity INT NOT NULL,
