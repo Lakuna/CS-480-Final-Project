@@ -3,6 +3,6 @@ export interface Product {
 	name: string;
 	description: string;
 	price: number;
-	vendor_id: string;
+	user_id: string;
 	stock_quantity: number;
 }

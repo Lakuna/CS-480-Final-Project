@@ -2,8 +2,8 @@
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE IF NOT EXISTS Customers (
-	customer_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS Users (
+	user_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
 	email TEXT NOT NULL UNIQUE,
 	name TEXT NOT NULL,
 	phone TEXT NOT NULL UNIQUE
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS Customers (
 
 CREATE TABLE IF NOT EXISTS Addresses (
 	address_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-	customer_id UUID NOT NULL REFERENCES Customers,
+	user_id UUID NOT NULL REFERENCES Users,
 	is_shipping BOOLEAN NOT NULL,
 	street_address TEXT NOT NULL,
 	city TEXT NOT NULL,
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS Addresses (
 
 CREATE TABLE IF NOT EXISTS PaymentInfos (
 	payment_info_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-	customer_id UUID NOT NULL REFERENCES Customers,
+	user_id UUID NOT NULL REFERENCES Users,
 	method TEXT NOT NULL,
 	card_number TEXT NOT NULL,
 	card_holder_name TEXT NOT NULL,
@@ -34,20 +34,11 @@ CREATE TABLE IF NOT EXISTS Orders (
 	order_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
 	order_date DATE NOT NULL,
 	status TEXT NOT NULL,
-	total_amount INTEGER NOT NULL,
 	estimated_delivery_date DATE NOT NULL,
-	customer_id UUID NOT NULL REFERENCES Customers,
+	user_id UUID NOT NULL REFERENCES Users,
 	payment_info_id UUID NOT NULL REFERENCES PaymentInfos,
 	address_id UUID NOT NULL REFERENCES Addresses,
 	actual_delivery_date DATE
-);
-
-CREATE TABLE IF NOT EXISTS Vendors (
-	vendor_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-	name TEXT NOT NULL,
-	address_id UUID NOT NULL REFERENCES Addresses,
-	phone TEXT NOT NULL UNIQUE,
-	email TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS Products (
@@ -55,7 +46,7 @@ CREATE TABLE IF NOT EXISTS Products (
 	name TEXT NOT NULL,
 	description TEXT NOT NULL,
 	price REAL NOT NULL,
-	vendor_id UUID NOT NULL REFERENCES Vendors,
+	user_id UUID NOT NULL REFERENCES Users,
 	stock_quantity INTEGER NOT NULL
 );
 
@@ -83,5 +74,5 @@ CREATE TABLE IF NOT EXISTS Reviews (
 	rating INTEGER NOT NULL,
 	comment TEXT NOT NULL,
 	date_submitted DATE NOT NULL,
-	customer_id UUID NOT NULL REFERENCES Customers
+	user_id UUID NOT NULL REFERENCES Users
 );

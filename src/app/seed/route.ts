@@ -1,33 +1,34 @@
+// TODO: Disable for most users.
+
 import {
 	addresses,
 	categories,
-	customers,
 	orderItems,
 	orders,
 	paymentInfos,
 	productCategories,
 	products,
 	reviews,
-	vendors
+	users
 } from "../../scripts/seedData";
 import { sql } from "@vercel/postgres";
 
-const seedCustomers = async () => {
+const seedUsers = async () => {
 	await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 	await sql`
-		CREATE TABLE IF NOT EXISTS Customers (
-			customer_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+		CREATE TABLE IF NOT EXISTS Users (
+			user_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
 			email TEXT NOT NULL UNIQUE,
 			name TEXT NOT NULL,
 			phone TEXT NOT NULL UNIQUE
 		);
 	`;
 	return await Promise.all(
-		customers.map(async (customer) => {
+		users.map(async (user) => {
 			return sql`
-				INSERT INTO Customers (customer_id, email, name, phone)
-				VALUES (${customer.customer_id}, ${customer.email}, ${customer.name}, ${customer.phone})
-				ON CONFLICT (customer_id) DO NOTHING;
+				INSERT INTO Users (user_id, email, name, phone)
+				VALUES (${user.user_id}, ${user.email}, ${user.name}, ${user.phone})
+				ON CONFLICT (user_id) DO NOTHING;
 			`;
 		})
 	);
@@ -38,7 +39,7 @@ const seedAddresses = async () => {
 	await sql`
 		CREATE TABLE IF NOT EXISTS Addresses (
 			address_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-			customer_id UUID NOT NULL REFERENCES Customers,
+			user_id UUID NOT NULL REFERENCES Users,
 			is_shipping BOOLEAN NOT NULL,
 			street_address TEXT NOT NULL,
 			city TEXT NOT NULL,
@@ -50,8 +51,8 @@ const seedAddresses = async () => {
 	return await Promise.all(
 		addresses.map(async (address) => {
 			return sql`
-				INSERT INTO Addresses (address_id, customer_id, is_shipping, street_address, city, state, postal_code, country)
-				VALUES (${address.address_id}, ${address.customer_id}, ${address.is_shipping}, ${address.street_address}, ${address.city}, ${address.state}, ${address.postal_code}, ${address.country})
+				INSERT INTO Addresses (address_id, user_id, is_shipping, street_address, city, state, postal_code, country)
+				VALUES (${address.address_id}, ${address.user_id}, ${address.is_shipping}, ${address.street_address}, ${address.city}, ${address.state}, ${address.postal_code}, ${address.country})
 				ON CONFLICT (address_id) DO NOTHING;
 			`;
 		})
@@ -63,7 +64,7 @@ const seedPaymentInfos = async () => {
 	await sql`
 		CREATE TABLE IF NOT EXISTS PaymentInfos (
 			payment_info_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-			customer_id UUID NOT NULL REFERENCES Customers,
+			user_id UUID NOT NULL REFERENCES Users,
 			method TEXT NOT NULL,
 			card_number TEXT NOT NULL,
 			card_holder_name TEXT NOT NULL,
@@ -74,8 +75,8 @@ const seedPaymentInfos = async () => {
 	return await Promise.all(
 		paymentInfos.map(async (paymentInfo) => {
 			return sql`
-				INSERT INTO PaymentInfos (payment_info_id, customer_id, method, card_number, card_holder_name, expiration_date, address_id)
-				VALUES (${paymentInfo.payment_info_id}, ${paymentInfo.customer_id}, ${paymentInfo.method}, ${paymentInfo.card_number}, ${paymentInfo.card_holder_name}, ${paymentInfo.expiration_date.toISOString().slice(0, 10)}, ${paymentInfo.address_id})
+				INSERT INTO PaymentInfos (payment_info_id, user_id, method, card_number, card_holder_name, expiration_date, address_id)
+				VALUES (${paymentInfo.payment_info_id}, ${paymentInfo.user_id}, ${paymentInfo.method}, ${paymentInfo.card_number}, ${paymentInfo.card_holder_name}, ${paymentInfo.expiration_date.toISOString().slice(0, 10)}, ${paymentInfo.address_id})
 				ON CONFLICT (payment_info_id) DO NOTHING;
 			`;
 		})
@@ -89,9 +90,8 @@ const seedOrders = async () => {
 			order_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
 			order_date DATE NOT NULL,
 			status TEXT NOT NULL,
-			total_amount INTEGER NOT NULL,
 			estimated_delivery_date DATE NOT NULL,
-			customer_id UUID NOT NULL REFERENCES Customers,
+			user_id UUID NOT NULL REFERENCES Users,
 			payment_info_id UUID NOT NULL REFERENCES PaymentInfos,
 			address_id UUID NOT NULL REFERENCES Addresses,
 			actual_delivery_date DATE
@@ -100,31 +100,9 @@ const seedOrders = async () => {
 	return await Promise.all(
 		orders.map(async (order) => {
 			return sql`
-				INSERT INTO Orders (order_id, order_date, status, total_amount, estimated_delivery_date, customer_id, payment_info_id, address_id, actual_delivery_date)
-				VALUES (${order.order_id}, ${order.order_date.toISOString().slice(0, 10)}, ${order.status}, ${order.total_amount}, ${order.estimated_delivery_date.toISOString().slice(0, 10)}, ${order.customer_id}, ${order.payment_info_id}, ${order.address_id}, ${order.actual_delivery_date?.toISOString().slice(0, 10) ?? null})
+				INSERT INTO Orders (order_id, order_date, status, estimated_delivery_date, user_id, payment_info_id, address_id, actual_delivery_date)
+				VALUES (${order.order_id}, ${order.order_date.toISOString().slice(0, 10)}, ${order.status}, ${order.estimated_delivery_date.toISOString().slice(0, 10)}, ${order.user_id}, ${order.payment_info_id}, ${order.address_id}, ${order.actual_delivery_date?.toISOString().slice(0, 10) ?? null})
 				ON CONFLICT (order_id) DO NOTHING;
-			`;
-		})
-	);
-};
-
-const seedVendors = async () => {
-	await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-	await sql`
-		CREATE TABLE IF NOT EXISTS Vendors (
-			vendor_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-			name TEXT NOT NULL,
-			address_id UUID NOT NULL REFERENCES Addresses,
-			phone TEXT NOT NULL UNIQUE,
-			email TEXT NOT NULL UNIQUE
-		);
-	`;
-	return await Promise.all(
-		vendors.map(async (vendor) => {
-			return sql`
-				INSERT INTO Vendors (vendor_id, name, address_id, phone, email)
-				VALUES (${vendor.vendor_id}, ${vendor.name}, ${vendor.address_id}, ${vendor.phone}, ${vendor.email})
-				ON CONFLICT (vendor_id) DO NOTHING;
 			`;
 		})
 	);
@@ -138,15 +116,15 @@ const seedProducts = async () => {
 			name TEXT NOT NULL,
 			description TEXT NOT NULL,
 			price REAL NOT NULL,
-			vendor_id UUID NOT NULL REFERENCES Vendors,
+			user_id UUID NOT NULL REFERENCES Users,
 			stock_quantity INTEGER NOT NULL
 		);
 	`;
 	return await Promise.all(
 		products.map(async (product) => {
 			return sql`
-				INSERT INTO Products (product_id, name, description, price, vendor_id, stock_quantity)
-				VALUES (${product.product_id}, ${product.name}, ${product.description}, ${product.price}, ${product.vendor_id}, ${product.stock_quantity})
+				INSERT INTO Products (product_id, name, description, price, user_id, stock_quantity)
+				VALUES (${product.product_id}, ${product.name}, ${product.description}, ${product.price}, ${product.user_id}, ${product.stock_quantity})
 				ON CONFLICT (product_id) DO NOTHING;
 			`;
 		})
@@ -222,14 +200,14 @@ const seedReviews = async () => {
 			rating INTEGER NOT NULL,
 			comment TEXT NOT NULL,
 			date_submitted DATE NOT NULL,
-			customer_id UUID NOT NULL REFERENCES Customers
+			user_id UUID NOT NULL REFERENCES Users
 		);
 	`;
 	return await Promise.all(
 		reviews.map(async (review) => {
 			return sql`
-				INSERT INTO Reviews (review_id, rating, comment, date_submitted, customer_id)
-				VALUES (${review.review_id}, ${review.rating}, ${review.comment}, ${review.date_submitted.toISOString().slice(0, 10)}, ${review.customer_id})
+				INSERT INTO Reviews (review_id, rating, comment, date_submitted, user_id)
+				VALUES (${review.review_id}, ${review.rating}, ${review.comment}, ${review.date_submitted.toISOString().slice(0, 10)}, ${review.user_id})
 				ON CONFLICT (review_id) DO NOTHING;
 			`;
 		})
@@ -239,11 +217,10 @@ const seedReviews = async () => {
 export const GET = async () => {
 	try {
 		await sql`BEGIN`;
-		await seedCustomers();
+		await seedUsers();
 		await seedAddresses();
 		await seedPaymentInfos();
 		await seedOrders();
-		await seedVendors();
 		await seedProducts();
 		await seedOrderItems();
 		await seedCategories();

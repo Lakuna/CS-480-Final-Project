@@ -3,5 +3,5 @@ export interface Review {
 	rating: number;
 	comment: string;
 	date_submitted: Date;
-	customer_id: string;
+	user_id: string;
 }

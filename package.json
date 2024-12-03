@@ -13,6 +13,7 @@
 		"@vercel/postgres": "^0.10.0",
 		"dotenv": "^16.4.5",
 		"next": "15.0.3",
+		"next-auth": "^5.0.0-beta.25",
 		"react": "19.0.0-rc-66855b96-20241106",
 		"react-dom": "19.0.0-rc-66855b96-20241106",
 		"sharp": "^0.33.5"
@@ -20,18 +21,22 @@
 	"devDependencies": {
 		"@types/eslint": "^9.6.1",
 		"@types/eslint-config-prettier": "^6.11.3",
-		"@types/node": "^20",
+		"@types/node": "^22.10.1",
 		"@types/react": "^18.3.12",
 		"@types/react-dom": "^18.3.1",
-		"@typescript-eslint/eslint-plugin": "^8.16.0",
-		"@typescript-eslint/parser": "^8.16.0",
-		"eslint": "^9.15.0",
+		"@typescript-eslint/eslint-plugin": "^8.17.0",
+		"@typescript-eslint/parser": "^8.17.0",
+		"eslint": "^9.16.0",
 		"eslint-config-next": "15.0.3",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-prettier": "^5.2.1",
 		"prettier": "^3.4.1",
 		"sass": "^1.81.0",
-		"typescript": "^5.6.3"
+		"typescript": "^5.7.2"
 	},
-	"type": "module"
+	"type": "module",
+	"overrides": {
+		"react": "$react",
+		"react-dom": "$react-dom"
+	}
 }

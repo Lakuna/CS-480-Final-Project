@@ -1,6 +1,6 @@
-import type { Metadata } from "next";
 import Card from "../../components/Card/Card";
 import CardList from "../../components/CardList/CardList";
+import type { Metadata } from "next";
 import { getAllProducts } from "../../scripts/db";
 
 const priceFormatter = new Intl.NumberFormat("en-US", {
@@ -16,6 +16,7 @@ export default async function Page() {
 			<hr />
 			<CardList>
 				{(await getAllProducts()).map((product) => (
+					// TODO: Link to product page.
 					<Card key={product.product_id}>
 						<h2>{product.name}</h2>
 						<p>{product.description}</p>

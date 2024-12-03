@@ -1,3 +1,5 @@
+// TODO: Delete.
+
 import { sql } from "@vercel/postgres";
 
 const listCustomers = async () => {
