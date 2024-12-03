@@ -19,7 +19,7 @@ export default function Page() {
 					placeholder="john.doe@example.com"
 					required
 				/>
-				<input type="submit" value="Log in" disabled={isPending} />
+				<input type="submit" value="Log In" disabled={isPending} />
 			</form>
 			{state && <p>{state}</p>}
 		</>

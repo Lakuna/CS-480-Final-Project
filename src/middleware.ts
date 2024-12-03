@@ -30,12 +30,7 @@ const nextAuthResult = NextAuth({
 					return null;
 				}
 
-				const user = await getUserByEmail(email);
-				if (!user) {
-					return null;
-				}
-
-				return user;
+				return (await getUserByEmail(email)) ?? null;
 			}
 		})
 	]
