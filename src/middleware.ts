@@ -7,12 +7,8 @@ import { getUserByEmail } from "./scripts/db";
 const nextAuthResult = NextAuth({
 	callbacks: {
 		authorized: ({ auth, request: { nextUrl } }) => {
-			const isLoggedIn = Boolean(auth?.user);
-
-			// TODO: Check all protected routes.
-			const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
-			if (isOnDashboard) {
-				return isLoggedIn;
+			if (nextUrl.pathname.startsWith("/dashboard")) {
+				return Boolean(auth?.user);
 			}
 
 			return true;

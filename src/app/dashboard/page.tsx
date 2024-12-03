@@ -1,4 +1,4 @@
-import auth from "../../middleware";
+import auth, { signOut } from "../../middleware";
 import { getUserByEmail } from "../../scripts/db";
 
 export default async function Page() {
@@ -24,6 +24,14 @@ export default async function Page() {
 					<p>
 						<strong>ID:</strong> {user.user_id}
 					</p>
+					<form
+						action={async () => {
+							"use server";
+							await signOut();
+						}}
+					>
+						<input type="submit" value="Log Out" />
+					</form>
 				</>
 			) : (
 				<p>{"Not logged in."}</p>

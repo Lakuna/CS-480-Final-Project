@@ -1,5 +1,3 @@
-// TODO: Disable for most users.
-
 import {
 	addresses,
 	categories,

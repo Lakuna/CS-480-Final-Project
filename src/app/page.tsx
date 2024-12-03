@@ -5,6 +5,7 @@ export default function Page() {
 		<>
 			<h1 style={{ textAlign: "center" }}>{"EC Shop"}</h1>
 			<hr />
+			<p>{"Use the navigation bar at the top of the screen to look around!"}</p>
 		</>
 	);
 }

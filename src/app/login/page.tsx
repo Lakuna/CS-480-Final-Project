@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "../../components/Link";
 import { authenticate } from "../../scripts/actions";
 import { useActionState } from "react";
 
@@ -19,9 +20,14 @@ export default function Page() {
 					placeholder="john.doe@example.com"
 					required
 				/>
+				<br />
 				<input type="submit" value="Log In" disabled={isPending} />
 			</form>
 			{state && <p>{state}</p>}
+			<hr />
+			<p>
+				<Link href="/signup">Sign Up</Link>
+			</p>
 		</>
 	);
 }

@@ -21,3 +21,9 @@ export const getAllVendors = async () =>
 	(
 		await sql<User>`SELECT Users.* FROM Users INNER JOIN Products USING (user_id)`
 	).rows;
+
+export const createUser = async (user: User) => sql`
+	INSERT INTO Users (email, name, phone)
+	VALUES (${user.email}, ${user.name}, ${user.phone})
+	ON CONFLICT (user_id) DO NOTHING;
+`;

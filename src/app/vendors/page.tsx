@@ -10,7 +10,6 @@ export default async function Page() {
 			<hr />
 			<CardList>
 				{(await getAllVendors()).map((vendor) => (
-					// TODO: Link to product page.
 					<Card key={vendor.user_id} href={`/vendors/${vendor.user_id}`}>
 						<h2>{vendor.name}</h2>
 						<hr />
