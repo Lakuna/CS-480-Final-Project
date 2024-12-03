@@ -1,3 +1,4 @@
+import type { Address } from "../types/Address";
 import type { Product } from "../types/Product";
 import type { User } from "../types/User";
 import { sql } from "@vercel/postgres";
@@ -27,3 +28,12 @@ export const createUser = async (user: User) => sql`
 	VALUES (${user.email}, ${user.name}, ${user.phone})
 	ON CONFLICT (user_id) DO NOTHING;
 `;
+
+export const createAddress = async (address: Address) => sql`
+	INSERT INTO Addresses (user_id, is_shipping, street_address, city, state, postal_code, country)
+	VALUES (${address.user_id}, ${address.is_shipping}, ${address.street_address}, ${address.city}, ${address.state}, ${address.postal_code}, ${address.country})
+	ON CONFLICT (address_id) DO NOTHING;
+`;
+
+export const getAddressesByUserId = async (id: string) =>
+	(await sql<Address>`SELECT * FROM Addresses WHERE user_id = ${id}`).rows;

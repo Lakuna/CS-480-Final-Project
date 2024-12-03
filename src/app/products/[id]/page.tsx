@@ -1,6 +1,11 @@
-import { getProductById, getUserById } from "../../../scripts/db";
+import {
+	getProductById,
+	getUserByEmail,
+	getUserById
+} from "../../../scripts/db";
 import Link from "../../../components/Link";
 import type { Metadata } from "next";
+import auth from "../../../middleware";
 import formatPrice from "../../../scripts/formatPrice";
 
 interface Props {
@@ -15,6 +20,10 @@ export default async function Page({ params }: Props) {
 	}
 
 	const vendor = await getUserById(product.user_id);
+
+	const session = await auth();
+	const user =
+		session?.user?.email && (await getUserByEmail(session.user.email));
 
 	return (
 		<>
@@ -37,6 +46,12 @@ export default async function Page({ params }: Props) {
 			<p>
 				<strong>ID:</strong> {product.product_id}
 			</p>
+			{user && (
+				<>
+					<h2>Order</h2>
+					<hr />
+				</>
+			)}
 		</>
 	);
 }

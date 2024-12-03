@@ -1,7 +1,7 @@
 "use server";
 
+import { createAddress, createUser } from "./db";
 import { AuthError } from "next-auth";
-import { createUser } from "./db";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { signIn } from "../middleware";
 
@@ -24,6 +24,63 @@ export const signUp = async (_: string | undefined, formData: FormData) => {
 	try {
 		// eslint-disable-next-line camelcase
 		await createUser({ email, name, phone, user_id: "" });
+	} catch (error) {
+		if (error instanceof Error) {
+			return `Something went wrong: ${error.toString()}`;
+		}
+
+		return "Something went wrong.";
+	}
+
+	return "Success!";
+};
+
+export const createAddressFromForm = async (
+	_: string | undefined,
+	formData: FormData
+) => {
+	// eslint-disable-next-line camelcase
+	const user_id = formData.get("user_id");
+	// eslint-disable-next-line camelcase
+	const is_shipping = formData.get("is_shipping");
+	// eslint-disable-next-line camelcase
+	const street_address = formData.get("street_address");
+	const city = formData.get("city");
+	const state = formData.get("state");
+	// eslint-disable-next-line camelcase
+	const postal_code = formData.get("postal_code");
+	const country = formData.get("country");
+	if (
+		// eslint-disable-next-line camelcase
+		typeof user_id !== "string" ||
+		// eslint-disable-next-line camelcase
+		typeof street_address !== "string" ||
+		typeof city !== "string" ||
+		typeof state !== "string" ||
+		// eslint-disable-next-line camelcase
+		typeof postal_code !== "string" ||
+		typeof country !== "string"
+	) {
+		return "A required field was missing.";
+	}
+
+	try {
+		// eslint-disable-next-line camelcase
+		await createAddress({
+			// eslint-disable-next-line camelcase
+			address_id: "",
+			city,
+			country,
+			// eslint-disable-next-line camelcase
+			is_shipping: is_shipping === "on",
+			// eslint-disable-next-line camelcase
+			postal_code,
+			state,
+			// eslint-disable-next-line camelcase
+			street_address,
+			// eslint-disable-next-line camelcase
+			user_id
+		});
 	} catch (error) {
 		if (error instanceof Error) {
 			return `Something went wrong: ${error.toString()}`;
