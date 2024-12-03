@@ -30,13 +30,13 @@ export const metadata: Metadata = {
 	creator: "Travis Martin",
 	metadataBase: new URL(domain),
 	openGraph: {
-		siteName: "Shop",
+		siteName: "EC Shop",
 		type: "website"
 	},
 	publisher: "Travis Martin",
 	title: {
 		default: "Page",
-		template: "%s | Shop"
+		template: "%s | EC Shop"
 	},
 	twitter: {
 		creatorId: "1117270419298496513",

@@ -1,10 +1,8 @@
-import { db } from "@vercel/postgres";
-
-const client = await db.connect();
+import { sql } from "@vercel/postgres";
 
 const listCustomers = async () => {
 	return (
-		await client.sql`
+		await sql`
 			SELECT name
 			FROM Customers;
 		`
