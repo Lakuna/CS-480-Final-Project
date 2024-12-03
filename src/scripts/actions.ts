@@ -1,6 +1,6 @@
 "use server";
 
-import { createAddress, createUser } from "./db";
+import { createAddress, createPaymentInfo, createUser } from "./db";
 import { AuthError } from "next-auth";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { signIn } from "../middleware";
@@ -54,6 +54,8 @@ export const createAddressFromForm = async (
 		// eslint-disable-next-line camelcase
 		typeof user_id !== "string" ||
 		// eslint-disable-next-line camelcase
+		typeof is_shipping !== "string" ||
+		// eslint-disable-next-line camelcase
 		typeof street_address !== "string" ||
 		typeof city !== "string" ||
 		typeof state !== "string" ||
@@ -78,6 +80,65 @@ export const createAddressFromForm = async (
 			state,
 			// eslint-disable-next-line camelcase
 			street_address,
+			// eslint-disable-next-line camelcase
+			user_id
+		});
+	} catch (error) {
+		if (error instanceof Error) {
+			return `Something went wrong: ${error.toString()}`;
+		}
+
+		return "Something went wrong.";
+	}
+
+	return "Success!";
+};
+
+export const createPaymentInfoFromForm = async (
+	_: string | undefined,
+	formData: FormData
+) => {
+	// eslint-disable-next-line camelcase
+	const user_id = formData.get("user_id");
+	const method = formData.get("method");
+	// eslint-disable-next-line camelcase
+	const card_number = formData.get("card_number");
+	// eslint-disable-next-line camelcase
+	const card_holder_name = formData.get("card_holder_name");
+	// eslint-disable-next-line camelcase
+	const expiration_date = formData.get("expiration_date");
+	// eslint-disable-next-line camelcase
+	const address_id = formData.get("address_id");
+	if (
+		// eslint-disable-next-line camelcase
+		typeof user_id !== "string" ||
+		typeof method !== "string" ||
+		// eslint-disable-next-line camelcase
+		typeof card_number !== "string" ||
+		// eslint-disable-next-line camelcase
+		typeof card_holder_name !== "string" ||
+		// eslint-disable-next-line camelcase
+		typeof expiration_date !== "string" ||
+		// eslint-disable-next-line camelcase
+		typeof address_id !== "string"
+	) {
+		return "A required field was missing.";
+	}
+
+	try {
+		// eslint-disable-next-line camelcase
+		await createPaymentInfo({
+			// eslint-disable-next-line camelcase
+			address_id,
+			// eslint-disable-next-line camelcase
+			card_holder_name,
+			// eslint-disable-next-line camelcase
+			card_number,
+			// eslint-disable-next-line camelcase
+			expiration_date: new Date(expiration_date),
+			method,
+			// eslint-disable-next-line camelcase
+			payment_info_id: "",
 			// eslint-disable-next-line camelcase
 			user_id
 		});

@@ -1,4 +1,5 @@
 import type { Address } from "../types/Address";
+import type { PaymentInfo } from "../types/PaymentInfo";
 import type { Product } from "../types/Product";
 import type { User } from "../types/User";
 import { sql } from "@vercel/postgres";
@@ -37,3 +38,13 @@ export const createAddress = async (address: Address) => sql`
 
 export const getAddressesByUserId = async (id: string) =>
 	(await sql<Address>`SELECT * FROM Addresses WHERE user_id = ${id}`).rows;
+
+export const createPaymentInfo = async (paymentInfo: PaymentInfo) => sql`
+	INSERT INTO PaymentInfos (user_id, method, card_number, card_holder_name, expiration_date, address_id)
+	VALUES (${paymentInfo.user_id}, ${paymentInfo.method}, ${paymentInfo.card_number}, ${paymentInfo.card_holder_name}, ${paymentInfo.expiration_date.toISOString().slice(0, 10)}, ${paymentInfo.address_id})
+	ON CONFLICT (payment_info_id) DO NOTHING;
+`;
+
+export const getPaymentInfosByUserId = async (id: string) =>
+	(await sql<PaymentInfo>`SELECT * FROM PaymentInfos WHERE user_id = ${id}`)
+		.rows;

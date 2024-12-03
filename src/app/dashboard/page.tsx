@@ -1,6 +1,13 @@
 import auth, { signOut } from "../../middleware";
-import { getAddressesByUserId, getUserByEmail } from "../../scripts/db";
-import { createAddressFromForm } from "../../scripts/actions";
+import {
+	createAddressFromForm,
+	createPaymentInfoFromForm
+} from "../../scripts/actions";
+import {
+	getAddressesByUserId,
+	getPaymentInfosByUserId,
+	getUserByEmail
+} from "../../scripts/db";
 
 export default async function Page() {
 	const session = await auth();
@@ -113,6 +120,75 @@ export default async function Page() {
 							value={user.user_id}
 						/>
 						<input type="submit" value="Create Address" />
+					</form>
+					<h2>{"Payment Information"}</h2>
+					<hr />
+					{(await getPaymentInfosByUserId(user.user_id)).map((paymentInfo) => (
+						<p key={paymentInfo.payment_info_id}>
+							<strong>
+								{paymentInfo.method} {paymentInfo.payment_info_id}
+							</strong>
+						</p>
+					))}
+					<h3>{"Add New"}</h3>
+					<form
+						action={async (formData: FormData) => {
+							"use server";
+							await createPaymentInfoFromForm(void 0, formData);
+						}}
+					>
+						<label htmlFor="method">{"Method: "}</label>
+						<input
+							type="text"
+							id="method"
+							name="method"
+							placeholder="Credit Card"
+							required
+						/>
+						<br />
+						<label htmlFor="card_number">{"Card number: "}</label>
+						<input
+							type="text"
+							id="card_number"
+							name="card_number"
+							placeholder="0123 4567 8901 2345"
+							required
+						/>
+						<br />
+						<label htmlFor="card_holder_name">{"Card holder name: "}</label>
+						<input
+							type="text"
+							id="card_holder_name"
+							name="card_holder_name"
+							placeholder="John Doe"
+							required
+						/>
+						<br />
+						<label htmlFor="expiration_date">{"Expiration date: "}</label>
+						<input
+							type="date"
+							id="expiration_date"
+							name="expiration_date"
+							placeholder="03-13-2021"
+							required
+						/>
+						<br />
+						<label htmlFor="address_id">{"Billing address ID: "}</label>
+						<input
+							type="text"
+							id="address_id"
+							name="address_id"
+							placeholder="United States"
+							required
+						/>
+						<br />
+						<input
+							type="hidden"
+							id="user_id"
+							name="user_id"
+							value={user.user_id}
+						/>
+						<input type="submit" value="Create Payment Information" />
 					</form>
 				</>
 			) : (
