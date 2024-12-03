@@ -1,13 +1,14 @@
 import { getProductsWithVendorId, getUserById } from "../../../scripts/db";
 import Card from "../../../components/Card/Card";
 import CardList from "../../../components/CardList/CardList";
+import type { Metadata } from "next";
 import formatPrice from "../../../scripts/formatPrice";
 
-export default async function Page({
-	params
-}: {
+interface Props {
 	params: Promise<{ id: string }>;
-}) {
+}
+
+export default async function Page({ params }: Props) {
 	const { id } = await params;
 	const vendor = await getUserById(id);
 	if (!vendor) {
@@ -51,3 +52,15 @@ export default async function Page({
 		</>
 	);
 }
+
+export const generateMetadata = async ({
+	params
+}: Props): Promise<Metadata> => {
+	const { id } = await params;
+	const vendor = await getUserById(id);
+	return {
+		description: "A vendor.",
+		openGraph: { url: `/vendors/${id}` },
+		title: vendor ? vendor.name : "Unknown Vendor"
+	};
+};

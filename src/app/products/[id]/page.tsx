@@ -1,12 +1,13 @@
 import { getProductById, getUserById } from "../../../scripts/db";
 import Link from "../../../components/Link";
+import type { Metadata } from "next";
 import formatPrice from "../../../scripts/formatPrice";
 
-export default async function Page({
-	params
-}: {
+interface Props {
 	params: Promise<{ id: string }>;
-}) {
+}
+
+export default async function Page({ params }: Props) {
 	const { id } = await params;
 	const product = await getProductById(id);
 	if (!product) {
@@ -39,3 +40,15 @@ export default async function Page({
 		</>
 	);
 }
+
+export const generateMetadata = async ({
+	params
+}: Props): Promise<Metadata> => {
+	const { id } = await params;
+	const product = await getProductById(id);
+	return {
+		description: "A product.",
+		openGraph: { url: `/products/${id}` },
+		title: product ? product.name : "Unknown Product"
+	};
+};
