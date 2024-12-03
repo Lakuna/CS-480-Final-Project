@@ -20,6 +20,15 @@ export default function Topnav({
 				<li>
 					<Link href="/">{"Index"}</Link>
 				</li>
+				<li>
+					<Link href="/products">{"Products"}</Link>
+				</li>
+				<li>
+					<Link href="/vendors">{"Vendors"}</Link>
+				</li>
+				<li>
+					<Link href="/dashboard">{"Dashboard"}</Link>
+				</li>
 			</ul>
 		</nav>
 	);

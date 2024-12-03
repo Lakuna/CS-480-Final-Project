@@ -1,13 +1,8 @@
 import Card from "../../components/Card/Card";
 import CardList from "../../components/CardList/CardList";
 import type { Metadata } from "next";
+import formatPrice from "../../scripts/formatPrice";
 import { getAllProducts } from "../../scripts/db";
-
-const priceFormatter = new Intl.NumberFormat("en-US", {
-	currency: "USD",
-	style: "currency",
-	trailingZeroDisplay: "stripIfInteger"
-});
 
 export default async function Page() {
 	return (
@@ -16,13 +11,15 @@ export default async function Page() {
 			<hr />
 			<CardList>
 				{(await getAllProducts()).map((product) => (
-					// TODO: Link to product page.
-					<Card key={product.product_id}>
+					<Card
+						key={product.product_id}
+						href={`/products/${product.product_id}`}
+					>
 						<h2>{product.name}</h2>
 						<p>{product.description}</p>
 						<hr />
 						<p>
-							<strong>Price:</strong> {priceFormatter.format(product.price)}
+							<strong>Price:</strong> {formatPrice(product.price)}
 						</p>
 						<p>
 							<strong>Stock quantity:</strong> {product.stock_quantity}
