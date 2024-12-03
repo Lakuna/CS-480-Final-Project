@@ -14,7 +14,7 @@ import { db } from "@vercel/postgres";
 
 const client = await db.connect();
 
-async function seedCustomers() {
+const seedCustomers = async () => {
 	await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 	await client.sql`
 		CREATE TABLE IF NOT EXISTS Customers (
@@ -26,7 +26,6 @@ async function seedCustomers() {
 	`;
 	return await Promise.all(
 		customers.map(async (customer) => {
-			console.log(customer); // TODO: Delete.
 			return client.sql`
 				INSERT INTO Customers (customer_id, email, name, phone)
 				VALUES (${customer.customer_id}, ${customer.email}, ${customer.name}, ${customer.phone})
@@ -34,9 +33,9 @@ async function seedCustomers() {
 			`;
 		})
 	);
-}
+};
 
-async function seedAddresses() {
+const seedAddresses = async () => {
 	await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 	await client.sql`
 		CREATE TABLE IF NOT EXISTS Addresses (
@@ -59,9 +58,9 @@ async function seedAddresses() {
 			`;
 		})
 	);
-}
+};
 
-async function seedPaymentInfos() {
+const seedPaymentInfos = async () => {
 	await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 	await client.sql`
 		CREATE TABLE IF NOT EXISTS PaymentInfos (
@@ -83,9 +82,9 @@ async function seedPaymentInfos() {
 			`;
 		})
 	);
-}
+};
 
-async function seedOrders() {
+const seedOrders = async () => {
 	await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 	await client.sql`
 		CREATE TABLE IF NOT EXISTS Orders (
@@ -109,9 +108,9 @@ async function seedOrders() {
 			`;
 		})
 	);
-}
+};
 
-async function seedVendors() {
+const seedVendors = async () => {
 	await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 	await client.sql`
 		CREATE TABLE IF NOT EXISTS Vendors (
@@ -131,9 +130,9 @@ async function seedVendors() {
 			`;
 		})
 	);
-}
+};
 
-async function seedProducts() {
+const seedProducts = async () => {
 	await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 	await client.sql`
 		CREATE TABLE IF NOT EXISTS Products (
@@ -154,9 +153,9 @@ async function seedProducts() {
 			`;
 		})
 	);
-}
+};
 
-async function seedOrderItems() {
+const seedOrderItems = async () => {
 	await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 	await client.sql`
 		CREATE TABLE IF NOT EXISTS OrderItems (
@@ -175,9 +174,9 @@ async function seedOrderItems() {
 			`;
 		})
 	);
-}
+};
 
-async function seedCategories() {
+const seedCategories = async () => {
 	await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 	await client.sql`
 		CREATE TABLE IF NOT EXISTS Categories (
@@ -195,9 +194,9 @@ async function seedCategories() {
 			`;
 		})
 	);
-}
+};
 
-async function seedProductCategories() {
+const seedProductCategories = async () => {
 	await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 	await client.sql`
 		CREATE TABLE IF NOT EXISTS ProductCategories (
@@ -215,9 +214,9 @@ async function seedProductCategories() {
 			`;
 		})
 	);
-}
+};
 
-async function seedReviews() {
+const seedReviews = async () => {
 	await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 	await client.sql`
 		CREATE TABLE IF NOT EXISTS Reviews (
@@ -237,9 +236,9 @@ async function seedReviews() {
 			`;
 		})
 	);
-}
+};
 
-export async function GET() {
+export const GET = async () => {
 	try {
 		await client.sql`BEGIN`;
 		await seedCustomers();
@@ -260,4 +259,4 @@ export async function GET() {
 
 		return Response.json({ error }, { status: 500 });
 	}
-}
+};

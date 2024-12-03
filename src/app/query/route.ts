@@ -2,19 +2,19 @@ import { db } from "@vercel/postgres";
 
 const client = await db.connect();
 
-async function listCustomers() {
+const listCustomers = async () => {
 	return (
 		await client.sql`
 			SELECT name
 			FROM Customers;
 		`
 	).rows;
-}
+};
 
-export async function GET() {
+export const GET = async () => {
 	try {
 		return Response.json(await listCustomers());
 	} catch (error) {
 		return Response.json({ error }, { status: 500 });
 	}
-}
+};

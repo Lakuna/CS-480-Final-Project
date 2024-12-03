@@ -1,4 +1,4 @@
-export type Order = {
+export interface Order {
 	order_id: string;
 	order_date: Date;
 	status: string;
@@ -8,4 +8,4 @@ export type Order = {
 	payment_info_id: string;
 	address_id: string;
 	actual_delivery_date?: Date;
-};
+}

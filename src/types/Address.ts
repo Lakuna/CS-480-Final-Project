@@ -1,4 +1,4 @@
-export type Address = {
+export interface Address {
 	address_id: string;
 	customer_id: string;
 	is_shipping: boolean;
@@ -7,4 +7,4 @@ export type Address = {
 	state: string;
 	postal_code: string;
 	country: string;
-};
+}

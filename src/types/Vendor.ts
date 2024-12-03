@@ -1,7 +1,7 @@
-export type Vendor = {
+export interface Vendor {
 	vendor_id: string;
 	name: string;
 	address_id: string;
 	phone: string;
 	email: string;
-};
+}
