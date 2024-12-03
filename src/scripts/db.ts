@@ -1,4 +1,6 @@
 import type { Address } from "../types/Address";
+import type { Order } from "../types/Order";
+import type { OrderItem } from "../types/OrderItem";
 import type { PaymentInfo } from "../types/PaymentInfo";
 import type { Product } from "../types/Product";
 import type { User } from "../types/User";
@@ -48,3 +50,23 @@ export const createPaymentInfo = async (paymentInfo: PaymentInfo) => sql`
 export const getPaymentInfosByUserId = async (id: string) =>
 	(await sql<PaymentInfo>`SELECT * FROM PaymentInfos WHERE user_id = ${id}`)
 		.rows;
+
+export const getOrdersWithProductId = async (id: string) =>
+	(
+		await sql<Order>`SELECT Orders.* FROM Orders INNER JOIN OrderItems USING (order_id) INNER JOIN Products USING (product_id) WHERE product_id = ${id}`
+	).rows;
+
+export const createOrder = async (order: Order) =>
+	(
+		await sql<Order>`
+	INSERT INTO Orders (order_date, status, estimated_delivery_date, user_id, payment_info_id, address_id)
+	VALUES (${order.order_date.toISOString().slice(0, 10)}, ${order.status}, ${order.estimated_delivery_date.toISOString().slice(0, 10)}, ${order.user_id}, ${order.payment_info_id}, ${order.address_id})
+	ON CONFLICT (order_id) DO NOTHING;
+`
+	).rows[0];
+
+export const createOrderItem = async (orderItem: OrderItem) => sql`
+	INSERT INTO OrderItems (order_id, product_id, quantity)
+	VALUES (${orderItem.order_id}, ${orderItem.product_id}, ${orderItem.quantity})
+	ON CONFLICT (order_item_id) DO NOTHING;
+`;

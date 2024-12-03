@@ -1,6 +1,12 @@
 "use server";
 
-import { createAddress, createPaymentInfo, createUser } from "./db";
+import {
+	createAddress,
+	createOrder,
+	createOrderItem,
+	createPaymentInfo,
+	createUser
+} from "./db";
 import { AuthError } from "next-auth";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { signIn } from "../middleware";
@@ -141,6 +147,74 @@ export const createPaymentInfoFromForm = async (
 			payment_info_id: "",
 			// eslint-disable-next-line camelcase
 			user_id
+		});
+	} catch (error) {
+		if (error instanceof Error) {
+			return `Something went wrong: ${error.toString()}`;
+		}
+
+		return "Something went wrong.";
+	}
+
+	return "Success!";
+};
+
+export const createOrderFromForm = async (
+	_: string | undefined,
+	formData: FormData
+) => {
+	// eslint-disable-next-line camelcase
+	const user_id = formData.get("user_id");
+	// eslint-disable-next-line camelcase
+	const product_id = formData.get("product_id");
+	// eslint-disable-next-line camelcase
+	const payment_info_id = formData.get("payment_info_id");
+	// eslint-disable-next-line camelcase
+	const address_id = formData.get("address_id");
+	const quantity = formData.get("quantity");
+	if (
+		// eslint-disable-next-line camelcase
+		typeof user_id !== "string" ||
+		// eslint-disable-next-line camelcase
+		typeof product_id !== "string" ||
+		// eslint-disable-next-line camelcase
+		typeof payment_info_id !== "string" ||
+		// eslint-disable-next-line camelcase
+		typeof address_id !== "string" ||
+		typeof quantity !== "string"
+	) {
+		return "A required field was missing.";
+	}
+
+	try {
+		const order = await createOrder({
+			// eslint-disable-next-line camelcase
+			address_id,
+			// eslint-disable-next-line camelcase
+			estimated_delivery_date: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+			// eslint-disable-next-line camelcase
+			order_date: new Date(),
+			// eslint-disable-next-line camelcase
+			order_id: "",
+			// eslint-disable-next-line camelcase
+			payment_info_id,
+			status: "Pending",
+			// eslint-disable-next-line camelcase
+			user_id
+		});
+
+		if (!order) {
+			return "Failed to create an order.";
+		}
+
+		await createOrderItem({
+			// eslint-disable-next-line camelcase
+			order_id: order.order_id,
+			// eslint-disable-next-line camelcase
+			order_item_id: "",
+			// eslint-disable-next-line camelcase
+			product_id,
+			quantity: parseInt(quantity, 10)
 		});
 	} catch (error) {
 		if (error instanceof Error) {
