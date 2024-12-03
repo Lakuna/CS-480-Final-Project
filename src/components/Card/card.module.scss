@@ -1,5 +1,4 @@
 @use "../../styles/variables";
-@use "../../styles/mixins";
 
 div.card,
 a.card {
@@ -11,13 +10,9 @@ a.card {
 	max-width: 500px;
 	text-decoration: none;
 
-	@include mixins.is-light-theme using ($is-light-theme) {
-		@if $is-light-theme {
-			box-shadow:
-				1px 1px 2px #3a3a443d,
-				2px 2px 4px #5a5b6a3d;
-		}
-	}
+	box-shadow:
+		1px 1px 2px #3a3a443d,
+		2px 2px 4px #5a5b6a3d;
 
 	div.content-wrapper {
 		padding: 10px;
